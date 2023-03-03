@@ -140,7 +140,7 @@ main(){
 
         setup_cmd="$setup_cmd usermod -a -G sudo $uname && \
         cp -r /etc/skel/. $HOME && \
-        chown $uname:$gname $HOME"
+        chown $uname:$gname $HOME $HOME/.bashrc $HOME/.bash_logout $HOME/.profile"
         
         docker exec $container_name /bin/bash -c "$setup_cmd"
     fi
