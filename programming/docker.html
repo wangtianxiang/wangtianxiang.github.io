@@ -493,6 +493,7 @@ main<span class="o">(){</span>
 <span class="w">                </span><span class="p">;;</span>
 <span class="w">            </span>?<span class="o">)</span>
 <span class="w">                </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;unregistered argument&quot;</span>
+<span class="w">                </span>usage
 <span class="w">                </span><span class="nb">exit</span>
 <span class="w">                </span><span class="p">;;</span>
 <span class="w">        </span><span class="k">esac</span>
@@ -517,7 +518,7 @@ main<span class="o">(){</span>
 <span class="w">        </span>
 <span class="w">        </span><span class="c1"># Generate shared folder if folder not exist</span>
 <span class="w">        </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/work
-<span class="w">        </span>mkdir<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.ssh
+<span class="w">        </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.ssh
 <span class="w">        </span><span class="o">[[</span><span class="w"> </span>-f<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.gitconfig<span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>touch<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.gitconfig
 
 <span class="w">        </span><span class="nv">docker_run_cmd</span><span class="o">=</span><span class="s2">&quot;docker run --gpus all --cap-add=SYS_ADMIN --name </span><span class="nv">$container_name</span><span class="s2"> \</span>
