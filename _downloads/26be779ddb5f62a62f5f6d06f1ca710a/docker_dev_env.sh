@@ -90,6 +90,11 @@ main(){
         then
             read -p "Publish container's 22 port to the host:" port
         fi
+        
+        # Generate shared folder if folder not exist
+        mkdir -p ${HOME}/work
+        mkdir ${HOME}/.ssh
+        [[ -f .gitconfig ]] || touch .gitconfig
 
         docker_run_cmd="docker run --gpus all --cap-add=SYS_ADMIN --name $container_name \
             --hostname $container_name  -v ${HOME}/work:${HOME}/work \
