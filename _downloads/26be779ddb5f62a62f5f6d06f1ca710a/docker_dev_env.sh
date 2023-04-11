@@ -94,7 +94,7 @@ main(){
         # Generate shared folder if folder not exist
         mkdir -p ${HOME}/work
         mkdir ${HOME}/.ssh
-        [[ -f .gitconfig ]] || touch .gitconfig
+        [[ -f ${HOME}/.gitconfig ]] || touch ${HOME}/.gitconfig
 
         docker_run_cmd="docker run --gpus all --cap-add=SYS_ADMIN --name $container_name \
             --hostname $container_name  -v ${HOME}/work:${HOME}/work \
