@@ -2,16 +2,16 @@
 ## 目的
 平时经常需要在一个主机上开启多个docker容器，但容器与容器，容器与主机之间拷贝文件非常不方便，并且经常因为权限问题导致文件不可读写，或者因为使用root造成风险。所以编写一个脚本快速的创建docker容器，与Host，其他容器保持相同的目录结构，权限。并且支持设置映射端口号到容器22端口，设置容器root以及和主机相同用户名的账号密码。
 
-共享下面3个目录
+共享下面2个目录
 
 Host | Contanier | Note
 ---------|----------|---------
 `${HOME}/work` | `${HOME}/work` | 共享工作目录
-`${HOME}/.gitconfig` | `${HOME}/.gitconfig` | 共享git配置
 `${HOME}/.ssh` | `${HOME}/.ssh` | 方便ssh,git操作
 
 ```{note}
-不建议直接共享`${HOME}`，会导致vscode无法同时attach 2个docker 容器。
+- 不建议直接共享`${HOME}`，会导致vscode无法同时attach 2个docker 容器。
+- 安装[**Dev Containers**](https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials)插件后，第一次attach容器时，会自动拷贝local `.gitconfig`文件到容器内。
 ```
 
 ## 使用

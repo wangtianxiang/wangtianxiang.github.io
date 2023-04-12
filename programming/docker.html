@@ -384,7 +384,7 @@ document.write(`
 <section id="id1">
 <h2>目的<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <p>平时经常需要在一个主机上开启多个docker容器，但容器与容器，容器与主机之间拷贝文件非常不方便，并且经常因为权限问题导致文件不可读写，或者因为使用root造成风险。所以编写一个脚本快速的创建docker容器，与Host，其他容器保持相同的目录结构，权限。并且支持设置映射端口号到容器22端口，设置容器root以及和主机相同用户名的账号密码。</p>
-<p>共享下面3个目录</p>
+<p>共享下面2个目录</p>
 <table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Host</p></th>
@@ -397,11 +397,7 @@ document.write(`
 <td><p><code class="docutils literal notranslate"><span class="pre">${HOME}/work</span></code></p></td>
 <td><p>共享工作目录</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">${HOME}/.gitconfig</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">${HOME}/.gitconfig</span></code></p></td>
-<td><p>共享git配置</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">${HOME}/.ssh</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">${HOME}/.ssh</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">${HOME}/.ssh</span></code></p></td>
 <td><p>方便ssh,git操作</p></td>
 </tr>
@@ -409,7 +405,10 @@ document.write(`
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>不建议直接共享<code class="docutils literal notranslate"><span class="pre">${HOME}</span></code>，会导致vscode无法同时attach 2个docker 容器。</p>
+<ul class="simple">
+<li><p>不建议直接共享<code class="docutils literal notranslate"><span class="pre">${HOME}</span></code>，会导致vscode无法同时attach 2个docker 容器。</p></li>
+<li><p>安装<a class="reference external" href="https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials"><strong>Dev Containers</strong></a>插件后，第一次attach容器时，会自动拷贝local <code class="docutils literal notranslate"><span class="pre">.gitconfig</span></code>文件到容器内。</p></li>
+</ul>
 </div>
 </section>
 <section id="id2">
@@ -519,11 +518,10 @@ main<span class="o">(){</span>
 <span class="w">        </span><span class="c1"># Generate shared folder if folder not exist</span>
 <span class="w">        </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/work
 <span class="w">        </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.ssh
-<span class="w">        </span><span class="o">[[</span><span class="w"> </span>-f<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.gitconfig<span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>touch<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.gitconfig
 
 <span class="w">        </span><span class="nv">docker_run_cmd</span><span class="o">=</span><span class="s2">&quot;docker run --gpus all --cap-add=SYS_ADMIN --name </span><span class="nv">$container_name</span><span class="s2"> \</span>
 <span class="s2">            --hostname </span><span class="nv">$container_name</span><span class="s2">  -v </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/work:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/work \</span>
-<span class="s2">            -v </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.gitconfig:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.gitconfig -v </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.ssh:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.ssh&quot;</span>
+<span class="s2">            -v </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.ssh:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.ssh&quot;</span>
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$port</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span>
 <span class="w">        </span><span class="k">then</span>
@@ -555,7 +553,7 @@ main<span class="o">(){</span>
 <span class="w">        </span><span class="nv">user_passwd</span><span class="o">=</span><span class="k">$(</span>get_passwd<span class="w"> </span><span class="nv">$uname</span><span class="k">)</span>
 
 <span class="w">        </span><span class="nv">setup_cmd</span><span class="o">=</span><span class="s2">&quot;apt update &amp;&amp; apt install -y vim git sudo &amp;&amp; &quot;</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$root_passwd</span><span class="w"> </span><span class="o">]</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$root_passwd</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span>
 <span class="w">        </span><span class="k">then</span>
 <span class="w">            </span><span class="nv">setup_cmd</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$setup_cmd</span><span class="s2"> echo -e \&quot;</span><span class="nv">$root_passwd</span><span class="s2">\\n</span><span class="nv">$root_passwd</span><span class="s2">\&quot; | passwd &amp;&amp; &quot;</span>
 <span class="w">        </span><span class="k">fi</span>
@@ -563,7 +561,7 @@ main<span class="o">(){</span>
 <span class="w">        </span><span class="nv">setup_cmd</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$setup_cmd</span><span class="s2"> groupadd -g </span><span class="nv">$gid</span><span class="s2"> </span><span class="nv">$gname</span><span class="s2"> &amp;&amp; \</span>
 <span class="s2">        useradd -d </span><span class="nv">$HOME</span><span class="s2"> -s /bin/bash -g </span><span class="nv">$gid</span><span class="s2"> -u </span><span class="nv">$uid</span><span class="s2"> </span><span class="nv">$uname</span><span class="s2"> &amp;&amp; &quot;</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$user_passwd</span><span class="w"> </span><span class="o">]</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$user_passwd</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span>
 <span class="w">        </span><span class="k">then</span>
 <span class="w">            </span><span class="nv">setup_cmd</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$setup_cmd</span><span class="s2"> echo -e \&quot;</span><span class="nv">$user_passwd</span><span class="s2">\\n</span><span class="nv">$user_passwd</span><span class="s2">\&quot; | passwd </span><span class="nv">$uname</span><span class="s2"> &amp;&amp; &quot;</span>
 <span class="w">        </span><span class="k">fi</span>
